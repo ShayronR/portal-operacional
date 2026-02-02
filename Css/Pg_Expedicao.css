@@ -1,0 +1,241 @@
+/* ========================= */
+/*      VARIÁVEIS GERAIS     */
+/* ========================= */
+:root {
+    --azul-escuro: #0d2740;
+    --azul-btn: #303f9f;
+    --azul-btn-hover: #1a237e;
+    --cinza-fundo: #f4f5f7;
+}
+
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: radial-gradient(circle at top, #ffffff 0%, #eef2f7 55%, #e7ecf4 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+/* ========================= */
+/*          LOGIN            */
+/* ========================= */
+.login-container {
+    background: #fff;
+    width: 350px;
+    padding: 28px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 14px;
+    font-size: 26px;
+    color: var(--azul-escuro);
+}
+
+input {
+    width: 90%;
+    padding: 11px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+button {
+    padding: 11px 15px;
+    margin-top: 12px;
+    background: var(--azul-btn);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--azul-btn-hover);
+}
+
+/* ========================= */
+/*          MENU 2.0         */
+/* ========================= */
+
+.menu-container {
+    display: none;
+    background: #ffffff;
+    width: 820px;
+    padding: 40px 35px;
+    border-radius: 18px;
+
+    border: 1px solid rgba(13, 39, 64, 0.18);
+    outline: 3px solid rgba(13, 39, 64, 0.06);
+    outline-offset: 0px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.10),
+        inset 0 0 0 1px rgba(255,255,255,0.9);
+
+    margin: 0 auto;
+
+    position: relative;
+    overflow: hidden;
+}
+.menu-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg, #0b2c5f, #1a237e);
+    opacity: 0.18;
+}
+
+
+/* Topo com logo + usuário */
+.topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.topo h2 {
+    font-size: 34px;
+    font-family: "", cursive; /* Fonte no nome e no bem-vindo */
+    color: var(--azul-escuro);
+}
+
+.logo-top {
+    width: 140px;
+}
+
+/* GRID estilo portal */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 20px;
+}
+
+/* CARD */
+.card-menu {
+    background: #fbfcfe;
+    padding: 22px;
+    border-radius: 18px;
+    text-align: center;
+    cursor: pointer;
+
+    border: 1px solid rgba(13, 39, 64, 0.10);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+
+    transition: 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.card-menu:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+    border-color: rgba(11, 44, 95, 0.45);
+}
+.card-menu:active {
+    transform: translateY(-1px) scale(0.99);
+}
+
+.card-menu::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #0b2c5f, #1a237e);
+    opacity: 0.20;
+}
+
+.card-menu:hover::before {
+    opacity: 0.85;
+}
+
+/* Ícone dentro do card */
+.card-menu img {
+    width: 55px;
+    margin-bottom: 12px;
+}
+
+/* Nome da função */
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--azul-escuro);
+}
+
+/* Botão sair */
+.card-sair {
+    background: #ffffff !important;
+}
+
+.card-sair:hover {
+    background: #7a0016 !important;
+}
+
+/* ========================= */ 
+/*          Logo MDB         */
+/* ========================= */
+
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo-mdias {
+    width: 180px;
+    max-width: 80%;
+    height: auto;
+    filter: drop-shadow(0px 3px 6px rgba(0,0,0,0.25));
+    transition: transform 0.2s ease-in-out;
+}
+
+.logo-mdias:hover {
+    transform: scale(1.05);
+}
+
+/* BOTÃO VOLTAR */
+.btn-voltar {
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+
+    background: #ffffff;
+    color: #0b2c5f;
+
+    border: 1px solid rgba(13, 39, 64, 0.18);
+    font-size: 14px;
+    font-weight: 600;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    transition: 0.2s ease;
+}
+
+.btn-voltar:hover {
+    background: #f0f4ff;
+    border-color: rgba(11, 44, 95, 0.35);
+}

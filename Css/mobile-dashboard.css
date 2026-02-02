@@ -1,0 +1,95 @@
+/* ===================================
+   📱 DASHBOARD – MOBILE
+=================================== */
+@media (max-width: 900px) {
+
+  /* CONTAINERS */
+  .dash-root,
+  .dash-container {
+    padding: 0 12px 20px;
+  }
+
+  /* HEADER */
+  .dash-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .dash-title {
+    font-size: 18px;
+    letter-spacing: 0.05em;
+  }
+
+  .dash-filtros {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* KPIs PRINCIPAIS */
+  .cards-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .card-kpi-value {
+    font-size: 18px;
+  }
+
+  /* GRID DE GRÁFICOS */
+  .grid-2col {
+    grid-template-columns: 1fr;
+  }
+
+  /* GRÁFICOS */
+  .chart-wrapper,
+  .card-chart .chart-wrapper {
+    height: 260px;
+    padding: 6px;
+  }
+
+  .chart-wrapper-small {
+    height: 220px;
+  }
+
+  /* TURNOS */
+  .grid-turnos {
+    grid-template-columns: 1fr;
+  }
+
+  .turno-kpis {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .turno-kpis strong {
+    font-size: 16px;
+  }
+
+  /* MINI CARDS */
+  .mini-cards-exp,
+  .mini-cards-rec {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+/* ===================================
+   📱 MOBILE PEQUENO
+=================================== */
+@media (max-width: 480px) {
+
+  .cards-row {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-cards-exp,
+  .mini-cards-rec {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-title {
+    font-size: 16px;
+  }
+
+}

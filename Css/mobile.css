@@ -1,0 +1,92 @@
+/* =========================
+   📱 MOBILE - GERAL
+========================= */
+@media (max-width: 768px) {
+
+  body {
+    height: auto;
+    padding: 14px;
+    align-items: flex-start;
+  }
+
+  /* LOGIN */
+  .login-container {
+    width: 100%;
+    padding: 22px;
+    margin-top: 40px;
+  }
+
+  /* CONTAINER PRINCIPAL */
+  .menu-container {
+    width: 100%;
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  /* TOPO */
+  .topo-linha1 {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .topo-left h2 {
+    font-size: 24px;
+    white-space: normal; /* 🔥 para de cortar texto */
+    text-align: center;
+  }
+
+  .logo-top {
+    width: 110px;
+  }
+
+  /* GRID DO MENU */
+  .menu-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* CARD */
+  .card-menu {
+    padding: 18px 12px;
+  }
+
+  .card-menu img {
+    width: 42px;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    white-space: normal;
+  }
+
+  /* ROBÔ / STATUS */
+  #avatar-ia .fala {
+    max-width: 100%;
+    min-width: unset;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* CHAT IA */
+  #chat-ia {
+    width: 100%;
+  }
+
+}
+
+/* =========================
+   📱 MOBILE PEQUENO
+========================= */
+@media (max-width: 480px) {
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topo-left h2 {
+    font-size: 22px;
+  }
+
+}

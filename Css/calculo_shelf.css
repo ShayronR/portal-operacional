@@ -1,0 +1,100 @@
+body {
+    font-family: system-ui, Arial;
+    background: #f4f5f7;
+    margin: 0;
+    padding: 40px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+h1 {
+    color: #0d2740;
+    margin-bottom: 20px;
+}
+
+.box {
+    background: #fff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-top: 25px;
+}
+
+label {
+    font-weight: 600;
+}
+
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+button {
+    background: #303f9f;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #1a237e;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 18px;
+}
+
+.resultado {
+    margin-top: 15px;
+    padding: 12px;
+    background: #eef3ff;
+    border-left: 4px solid #303f9f;
+    border-radius: 6px;
+    min-height: 40px;
+}
+
+.btn-voltar {
+    padding: 8px 14px;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.btn-voltar:hover {
+    background: #222;
+}
+
+.autocomplete-list {
+    position: absolute;
+    background: white;
+    width: 260px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 20;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover {
+    background: #e7e9ff;
+}

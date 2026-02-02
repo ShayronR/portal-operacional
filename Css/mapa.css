@@ -1,0 +1,235 @@
+:root {
+    --azul-escuro: #0d2740;
+    --azul-claro: #1f4a7a;
+    --cinza-fundo: #f4f5f7;
+    --cinza-borda: #d0d4dc;
+    --verde: #1f9f55;
+    --vermelho: #e53935;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: var(--cinza-fundo);
+    color: #222;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 16px 32px;
+}
+
+/* ----- TOPO ----- */
+.top-header {
+    background: var(--azul-escuro);
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+/* ----- CONTROLES ----- */
+.controls {
+    background: #fff;
+    padding: 16px 20px;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid var(--cinza-borda);
+    border-top: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+/* ----- CARDS ----- */
+.cards {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--cinza-borda);
+    padding: 10px 12px;
+}
+
+.card-title {
+    font-size: 12px;
+    color: #777;
+}
+
+.card-value {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.card-value.verde {
+    color: var(--verde);
+}
+
+/* ----- BLOCO DE INFO ----- */
+.block-info {
+    margin-top: 16px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--cinza-borda);
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.block-row {
+    margin-bottom: 4px;
+}
+
+.block-label {
+    font-weight: 600;
+}
+
+/* ----- TABELA ----- */
+.table-wrapper {
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--cinza-borda);
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+thead {
+    background: #e4e7ee;
+}
+
+th, td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #dde1ea;
+}
+
+/* Centralizar colunas numéricas */
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5),
+td:nth-child(6),
+td:nth-child(7),
+td:nth-child(8),
+td:nth-child(9) {
+    text-align: center;
+}
+
+/* ----- BOTOES VOLTAR / IMPRIMIR ----- */
+.linha-botoes {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.btn-voltar {
+    background: #444;
+    color: #fff;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-voltar:hover {
+    background: #222;
+}
+
+/* -------- IMPRESSÃO -------- */
+@media print {
+
+    @page {
+        size: A4 portrait;
+        margin: 12mm;
+    }
+
+    .controls, .btn, #statusMsg, input, #excelFile {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    #printHeader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        padding-bottom: 6px;
+    }
+
+    #printFooter {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    #printFooter:after {
+        content: "Página " counter(page) " de " counter(pages);
+    }
+
+    .container {
+        margin-top: 60px;
+        margin-bottom: 40px;
+    }
+
+    thead {
+        display: table-header-group !important;
+    }
+}
+/* Status (Liberado / Não Liberado) */
+.status-badge{
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.status-ok{
+  background: #0f7b2f;   /* verdão */
+  color: #fff;
+}
+
+.status-bad{
+  background: #b00020;   /* vermelhão */
+  color: #fff;
+}
+
+.status-warn{
+  background: #ff9800;   /* laranja */
+  color: #fff;
+}
+/* Alinhar coluna Descrição (thead e tbody) */
+.table-wrapper th:nth-child(2),
+.table-wrapper td:nth-child(2) {
+    text-align: left !important;
+    padding-left: 12px;
+}

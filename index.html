@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Portal Logística</title>
+    <link rel="stylesheet" href="Css/portal.css?v=3">
+    <link rel="stylesheet" href="Css/mobile.css">
+    <script src="Js/meta.js"></script>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div class="login-container" id="login-area">
+        <h2>Portal Logística</h2>
+        <input type="text" id="usuario" placeholder="Digite seu usuário" />
+        <button class="btn-login" onclick="entrar()">Entrar</button>
+    </div>
+
+    <!-- MENU -->
+    <div class="menu-container" id="menu-area">
+        <div class="topo">
+
+            <!-- LINHA 1 -->
+            <div class="topo-linha1">
+                <div class="topo-left">
+                    <h2>Bem-vindo, <span id="nomeUsuario"></span></h2>
+                </div>
+
+                <div class="topo-right">
+                    <img src="imagens/logo_mdias.png" class="logo-mdias" alt="Logo M. Dias Branco">
+                </div>
+            </div>
+
+            <!-- LINHA 2 -->
+            <div class="topo-linha2">
+                <div id="avatar-ia" title="Assistente Operacional">
+                    <span class="robo">🤖</span>
+                    <span class="fala">
+                        <span id="falaTexto">Carregando...</span>
+                        <span id="serverBadge" class="server-badge off">● OFF</span>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        <div class="ultima-atualizacao">
+            Última atualização: <span id="ultimaAtualizacao"></span>
+        </div>
+
+
+
+        <div class="menu-grid">
+            <div class="card-menu" onclick="location.href='Paginas/Dashboards.html'">
+                <img src="imagens/icon_dashboard.png">
+                <div class="card-title">Dashboards</div>
+            </div>
+            <div class="card-menu" onclick="location.href='Paginas/Expedicao.html'">
+                <img src="imagens/icon_expedicao.png">
+                <div class="card-title">Expedição</div>
+            </div>
+            <div class="card-menu" onclick="location.href='Paginas/Ferramentas.html'">
+                <img src="imagens/icon_ferramentas.png">
+                <div class="card-title">Ferramentas</div>
+            </div>
+            <div class="card-menu" onclick="location.href='Paginas/ajuda.html'">
+                <img src="imagens/icon_ajuda.png">
+                <div class="card-title">Sobre/Ajuda</div>
+            </div>
+            <div class="card-menu card-sair" onclick="sair()">
+                <img src="imagens/icon_sair.png">
+                <div class="card-title" style="color:rgb(0, 0, 0);">Sair</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT IA -->
+    <div id="chat-ia" class="chat-fechado">
+        <div class="chat-header">
+            🤖 Assistente Operacional
+            <span class="fechar-chat" onclick="fecharChat()">✖</span>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="msg ia">Olá! O que você deseja atualizar?</div>
+            <button onclick="menuAtualizacoes()">🔄 Atualizações</button>
+        </div>
+    </div>
+
+<script>
+// ===== DETECÇÃO AUTOMÁTICA DE URL =====
+let SERVER_URL;
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    SERVER_URL = "http://localhost:8089";
+    console.log("🔧 Modo LOCAL: usando localhost:8089");
+} else {
+    SERVER_URL = "http://10.148.18.8:8089";
+    console.log("🌐 Modo REDE: usando 10.148.18.8:8089");
+}
+
+// ==============================
+// 🌐 ESTADO GLOBAL DO SERVIDOR (FONTE ÚNICA)
+// ==============================
+window.SERVER_ONLINE = false;
+
+
+(function () {
+  const el = document.getElementById("ultimaAtualizacao");
+  if (!el) return;
+
+  if (window.PORTAL_META?.ultima_atualizacao) {
+    el.textContent = window.PORTAL_META.ultima_atualizacao;
+  }
+})();
+
+
+function setServerOnlineGlobal(isOnline) {
+  window.SERVER_ONLINE = !!isOnline;
+
+  // atualiza badge do avatar do portal
+  const badge = document.getElementById("serverBadge");
+  if (badge) {
+    if (window.SERVER_ONLINE) {
+      badge.classList.remove("off");
+      badge.classList.add("on");
+      badge.innerText = "● ON";
+    } else {
+      badge.classList.remove("on");
+      badge.classList.add("off");
+      badge.innerText = "● OFF";
+    }
+  }
+}
+
+
+
+window.intervalos = {};
+
+// ===== CONTROLE DE EXECUCAO (ANTI-STATUS-ANTIGO) =====
+// Evita que o Portal "puxe" o último status.json (finalizado/erro) da execução anterior.
+// Ao clicar em executar, criamos um contexto local e só começamos a renderizar quando o /status mudar.
+window.RUN_CTX = {
+  runId: 0,
+  comando: null,
+  baselineKey: null,
+  started: false
+};
+
+function _makeStatusKey(data) {
+  const st  = (data && data.status) ? String(data.status) : '';
+  const et  = (data && data.etapa) ? String(data.etapa) : '';
+  const msg = (data && data.mensagem) ? String(data.mensagem) : '';
+  const cmd = (data && data.comando_atual) ? String(data.comando_atual) : '';
+  const exe = (data && data.executando_agora) ? String(data.executando_agora) : '';
+  return st + '||' + et + '||' + msg + '||' + cmd + '||' + exe;
+}
+
+
+function _startNewRun(comando) {
+  window.RUN_CTX.runId = Date.now();
+  window.RUN_CTX.comando = comando;
+  window.RUN_CTX.baselineKey = null;
+  window.RUN_CTX.started = false;
+}
+
+
+// ===== MAPEAMENTO DE MACROS =====
+const MACROS = {
+    "EFEITO_COLMEIA": { nome: "🐝 Efeito Colmeia" },
+    "EXECUTOR": { nome: "📦 Reporte Operacional" },
+    "OTM": { nome: "📊 OTM" },
+    "ACOMPANHAMENTO_WMS": { nome: "🚚 Acompanhamento WMS" },
+    "COLETA_WMS": { nome: "🏗️ Coleta WMS" },
+    "EXTRAIR_PRODUTIVIDADE_SEPARACAO": { nome: "🏗️ Produtividade Separação" },
+    "DOCAS_EXECUTOR": { nome: "🚪 Atualizar Docas" },
+    "Produtividade DRP_EXP": { nome: "📊📦 Atualizar DRP + Exp TON" }
+};
+
+// ===== MAPEAMENTO DE FLUXOS (IGUAL AO SERVIDOR) =====
+// IMPORTANTE: EXECUTOR continua 1 etapa para NÃO duplicar pipeline.
+const MACRO_FLOWS = {
+    'EXECUTOR': ['EXECUTOR'],
+    'OTM': ['OTM', 'ATUALIZAR_EXCEL', 'CONVERTER_OTM'],
+    'ACOMPANHAMENTO_WMS': ['ACOMPANHAMENTO_WMS', 'ATUALIZAR_EXCEL', 'CONVERTER_OTM'],
+    'COLETA_WMS': ['COLETA_WMS', 'ATUALIZAR_EXCEL', 'CONVERTER_OTM'],
+    'EFEITO_COLMEIA': ['EFEITO_COLMEIA'],
+    'EXTRAIR_PRODUTIVIDADE_SEPARACAO': ['EXTRAIR_PRODUTIVIDADE_SEPARACAO'],
+    'DOCAS_EXECUTOR': ['DOCAS_EXECUTOR'],
+    'Produtividade DRP_EXP': ['Produtividade DRP_EXP']
+};
+
+// ===== NOMES AMIGÁVEIS DAS ETAPAS (para fluxos por ID) =====
+const STEP_NAMES = {
+    'EXECUTOR': 'Atualização Completa',
+    'OTM': 'Extrair OTM',
+    'ACOMPANHAMENTO_WMS': 'Extrair Acompanhamento',
+    'COLETA_WMS': 'Extrair Coleta',
+    'ATUALIZAR_EXCEL': 'Atualizar Excel',
+    'CONVERTER_OTM': 'Converter OTM',
+    'EFEITO_COLMEIA': 'Efeito Colmeia',
+    'EXTRAIR_PRODUTIVIDADE_SEPARACAO': 'Extrair Produtividade Separação',
+    'DOCAS_EXECUTOR': 'Atualizar Docas',
+    'Produtividade DRP_EXP':'Atualizar DRP + EXP',
+    'Executor Dividir Lote':'Atualização Completa',
+    'Dividir Lote':'Dividir Lote',
+    'EXTRAIR_PRODUTIVIDADE_EXPEDICAO': 'Extrair Produtividade Expedição',
+    'Shelf DRP':'Shelf DRP',
+    'Ocupação do Estoque':'Atualizar Ocupação do Estoque',
+    'Ocupação do Estoque - Armazem':'Atualizar Capaciddade',
+    'Produtividade Recebimento':'Atualizar Produtividade Recebimento',
+    'Netlifly':'Atualizar Netlifly'
+};
+
+// ===== ETAPAS VISUAIS DO EXECUTOR (lidas do status.json do Executor.exe) =====
+// Ajuste os nomes abaixo para bater com os nomes do seu STEPS no Executor.
+const EXECUTOR_PIPELINE_STEPS = [
+    "Extrair OTM",
+    "Extrair Acompanhamento",
+    "Extrair Coleta",
+    "Atualizar Excel",
+    "Converter OTM para JS"
+];
+
+// ===== ETAPAS VISUAIS DO EFEITO COLMEIA (Executor_Efeito_Colmeia.exe) =====
+// Baseado no seu código do executor do Colmeia (ETAPAS)
+const COLMEIA_PIPELINE_STEPS = [
+    "Extrair Estoque",
+    "Extrair Alocação",
+    "Atualizar Excel",
+    "Converter Excel → JS"
+];
+
+// ===== TESTE DE CONECTIVIDADE AO INICIAR =====
+window.addEventListener('load', () => {
+    console.log("🔍 Testando conexão com servidor...");
+    fetch(`${SERVER_URL}/ping`)
+        .then(r => r.json())
+        .then(d => console.log("✅ Servidor conectado:", d))
+        .catch(e => {
+            console.error("❌ ERRO: Servidor não responde!", e);
+            console.log("💡 Verifique se o servidor está rodando em:", SERVER_URL);
+        });
+});
+
+// ===== CONTROLE DO CHAT =====
+document.getElementById("avatar-ia").onclick = () => {
+    document.getElementById("chat-ia").classList.add("aberto");
+};
+
+function fecharChat() {
+    Object.keys(window.intervalos).forEach(key => clearInterval(window.intervalos[key]));
+    window.intervalos = {};
+    document.getElementById("chat-ia").classList.remove("aberto");
+}
+
+// ===== LOGIN =====
+function entrar() {
+    const usuario = document.getElementById('usuario').value.trim();
+    if (!usuario) return alert("Digite um usuário válido!");
+    localStorage.setItem("usuario", usuario);
+    document.getElementById("login-area").style.display = "none";
+    document.getElementById("menu-area").style.display = "block";
+    document.getElementById("nomeUsuario").innerText = usuario;
+
+    iniciarAssistenteRobo();
+
+
+}
+
+window.onload = function () {
+    const usuario = localStorage.getItem("usuario");
+    if (usuario) {
+        document.getElementById("login-area").style.display = "none";
+        document.getElementById("menu-area").style.display = "block";
+        document.getElementById("nomeUsuario").innerText = usuario;
+
+        iniciarAssistenteRobo();
+    }
+};
+
+function sair() {
+    localStorage.clear();
+    window.location.reload();
+}
+
+// ===== MENUS =====
+function menuAtualizacoes() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `
+        <div class="msg ia">Atualizações disponíveis:</div>
+
+        <button onclick="menuDashboards()">📊 Dashboards</button>
+
+        <button onclick="menuFerramentas()">⚙️ Ferramentas</button>
+
+        <button onclick="executar('Netlifly')">🚀  Atualizar APP</button>
+    
+        <button onclick="verificarFila()">📋 Ver Fila</button>
+
+        <button onclick="testarConexao()" style="background:#2196F3;">🔧 Testar Servidor</button>
+    `;
+}
+
+function menuFerramentas() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `
+        <div class="msg ia"><strong> ⚙️Atualizações Ferramentas</strong></div>
+
+        <button onclick="menuEfeitoColmeia()">🐝 Efeito Colmeia</button>
+
+        <button onclick="menuDividirLote()">✂️ Dividir Lote</button>
+
+        <button onclick="executar('Shelf DRP')">🧊 Shelf DRP</button>
+
+        <button class="btn-voltar" onclick="menuAtualizacoes()">⬅ Voltar</button>
+    `;
+}
+
+function menuDashboards() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `
+        <div class="msg ia"><strong>📊 Atualizações Dashboards</strong></div>
+
+        <button onclick="menuReporte()">📦 Reporte Operacional</button>
+
+        <button onclick="executar('EXTRAIR_PRODUTIVIDADE_SEPARACAO')">🏗️ Produtividade Separação</button>
+
+        <button onclick="executar('EXTRAIR_PRODUTIVIDADE_EXPEDICAO')">🏗️ Produtividade Expedição</button>
+
+        <button onclick="executar('Produtividade Recebimento')">🏗️ Produtividade Recebimento</button>
+
+        <button onclick="executar('DOCAS_EXECUTOR')">🚪 Atualizar Docas</button>
+
+        <button onclick="executar('Produtividade DRP_EXP')">📊📦 Atualizar DRP + Exp TON</button>
+
+        <button onclick="menuOcupacaoDoEstoque()">📦 Ocuapação do Estoque</button>        
+
+        <button class="btn-voltar" onclick="menuAtualizacoes()">⬅ Voltar</button>
+    `;
+}
+
+function menuReporte() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `
+        <div class="msg ia"><strong>Reporte Operacional - Expedição</strong></div>
+        <button onclick="executar('EXECUTOR')">🔄 Atualização Completa</button>
+        <button onclick="executar('OTM')">📊 OTM</button>
+        <button onclick="executar('ACOMPANHAMENTO_WMS')">🚚 Acompanhamento WMS</button>
+        <button onclick="executar('COLETA_WMS')">🏗️ Coleta WMS</button>
+        <button class="btn-voltar" onclick="menuDashboards()">⬅ Voltar</button>
+    `;
+}
+
+function menuOcupacaoDoEstoque() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `
+        <div class="msg ia"><strong>Ocupação do Estoque</strong></div>
+        
+        <button onclick="executar('Ocupação do Estoque')">🔄 Atualização Completa</button>
+        <button onclick="executar('Ocupação do Estoque - Armazem')">🏭📊 Converter Capacidade do Armazém</button>
+
+        <button class="btn-voltar" onclick="menuDashboards()">⬅ Voltar</button>
+    `;
+}
+
+function menuEfeitoColmeia() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `
+        <div class="msg ia"><strong>🐝 Efeito Colmeia</strong></div>
+        <button onclick="executar('EFEITO_COLMEIA')">🔄 Executar Completo</button>
+        <button class="btn-voltar" onclick="menuAtualizacoes()">⬅ Voltar</button>
+    `;
+}
+
+function menuDividirLote() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `
+        <div class="msg ia"><strong>✂️ Dividir Lote</strong></div>
+        <button onclick="executar('Executor Dividir Lote')">🔄 Executar Completo</button>
+        <button onclick="executar('Dividir Lote')">✂️ Dividir Lote</button>
+        <button class="btn-voltar" onclick="menuAtualizacoes()">⬅ Voltar</button>
+    `;
+}
+
+// ===== TESTE DE CONEXÃO =====
+function testarConexao() {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `<div class="msg ia">🔍 Testando conexão...</div>`;
+
+    fetch(`${SERVER_URL}/ping`)
+        .then(r => r.json())
+        .then(d => {
+            body.innerHTML = `
+                <div class="msg ia">✅ Servidor conectado!</div>
+                <div class="msg ia" style="font-size:12px; background:#e8f5e9; padding:10px; border-radius:8px;">
+                    <strong>URL:</strong> ${SERVER_URL}<br>
+                    <strong>Status:</strong> ${d.status}<br>
+                    <strong>Timestamp:</strong> ${d.timestamp}<br>
+                    <strong>Macros disponíveis:</strong> ${d.macros_disponiveis ? d.macros_disponiveis.length : 'N/A'}
+                </div>
+                <button onclick="menuAtualizacoes()">⬅ Voltar</button>
+            `;
+        })
+        .catch(e => {
+            body.innerHTML = `
+                <div class="msg ia">❌ Servidor não responde!</div>
+                <div class="msg ia" style="font-size:12px; background:#ffebee; padding:10px; border-radius:8px;">
+                    <strong>URL tentada:</strong> ${SERVER_URL}<br>
+                    <strong>Erro:</strong> ${e.message}<br><br>
+                    <strong>Verifique:</strong><br>
+                    1. Servidor Python está rodando?<br>
+                    2. Porta 8089 está aberta?<br>
+                    3. Firewall bloqueando?
+                </div>
+                <button onclick="menuAtualizacoes()">⬅ Voltar</button>
+            `;
+        });
+}
+
+// ===== ID ÚNICO DO PC (fica salvo no navegador) =====
+function getClientId() {
+  let id = localStorage.getItem("client_id");
+  if (!id) {
+    id = "PC_" + Math.random().toString(16).slice(2) + "_" + Date.now();
+    localStorage.setItem("client_id", id);
+  }
+  return id;
+}
+
+
+// ===== EXECUTAR =====
+function executar(comando) {
+    const body = document.getElementById("chat-body");
+    body.innerHTML = `<div class="msg ia">⏳ Enviando comando...</div>`;
+
+    console.log("EXECUTAR | client_id:", getClientId(), "| comando:", comando);
+
+
+    fetch(`${SERVER_URL}/executar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ comando: comando, client_id: getClientId() })
+
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'sucesso' || data.status === 'adicionado_fila') {
+            // inicia contexto anti-status-antigo
+            _startNewRun(comando);
+
+            body.innerHTML = `
+                <div class="msg ia">✅ Comando enviado com sucesso!</div>
+                <div class="msg ia">📋 Posição na fila: ${data.posicao_fila || 1}</div>
+                <div class="msg ia" style="font-size:12px; background:#fff3cd; padding:10px; border-radius:8px;">⏳ Aguardando o servidor iniciar esta execução (ignorando status antigo)...</div>
+            `;
+
+            // começa a monitorar quase imediato; a própria tela segura até o /status mudar
+            setTimeout(() => monitorarProcesso(comando), 150);
+        } else {
+            body.innerHTML = `<div class="msg ia">❌ ${data.mensagem || 'Resposta inesperada'}</div>`;
+        }
+    })
+    .catch(err => {
+        body.innerHTML = `
+            <div class="msg ia">❌ Erro de conexão!</div>
+            <div class="msg ia" style="font-size:12px; background:#ffebee; padding:10px; border-radius:8px;">
+                <strong>Erro:</strong> ${err.message}<br>
+                <strong>URL:</strong> ${SERVER_URL}
+            </div>
+            <button onclick="testarConexao()">🔧 Testar Servidor</button>
+            <button onclick="menuAtualizacoes()">⬅ Voltar</button>
+        `;
+    });
+}
+
+// ===== VERIFICAR FILA =====
+function verificarFila() {
+    fetch(`${SERVER_URL}/fila`)
+        .then(r => r.json())
+        .then(data => {
+            const body = document.getElementById("chat-body");
+
+            const totalFila = data.total_fila ?? 0;
+
+            if (totalFila === 0) {
+                body.innerHTML = `
+                    <div class="msg ia">📋 Fila vazia</div>
+                    <div class="msg ia">Executando agora: <strong>${data.executando || "Nenhum"}</strong></div>
+                    <button onclick="menuAtualizacoes()">⬅ Voltar</button>
+                `;
+                return;
+            }
+
+
+            let html = '<div class="msg ia"><strong>📋 Fila de Execução</strong></div>';
+
+            html += `<div class="msg ia">Executando agora: <strong>${data.executando || "Nenhum"}</strong></div>`;
+            html += `<div class="msg ia">Total na fila: <strong>${totalFila}</strong></div>`;
+
+            if (data.comandos && data.comandos.length > 0) {
+                html += '<div style="margin-top:10px;"><strong>⏳ Comandos:</strong></div>';
+
+                data.comandos.forEach((item, idx) => {
+                    const cmdId = item.comando;
+                    const nomeAmigavel = MACROS[cmdId]?.nome || STEP_NAMES[cmdId] || cmdId;
+                    const cliente = item.client_id || "—";
+
+                    html += `
+                        <div style="background:#f5f5f5; padding:8px; margin:5px 0; border-radius:6px;">
+                            <div><strong>${idx + 1}.</strong> ${nomeAmigavel}</div>
+                            <div style="font-size:12px; opacity:.7;">Client: ${cliente}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `<button onclick="menuAtualizacoes()" style="margin-top:10px;">⬅ Voltar</button>`;
+            body.innerHTML = html;
+        })
+        .catch(err => {
+            const body = document.getElementById("chat-body");
+            body.innerHTML = `
+                <div class="msg ia">❌ Erro ao verificar fila: ${err.message}</div>
+                <button onclick="menuAtualizacoes()">⬅ Voltar</button>
+            `;
+        });
+}
+
+
+// ===== MONITORAR COM ETAPAS =====
+function monitorarProcesso(comando) {
+    const body = document.getElementById("chat-body");
+    const titulo = MACROS[comando]?.nome || comando;
+
+    // fluxo padrão (por IDs)
+    let fluxo = MACRO_FLOWS[comando] || [comando];
+    let totalEtapas = fluxo.length;
+
+    // ✅ para EXECUTOR: usamos o pipeline visual do próprio Executor.exe
+    const isExecutor = (comando === 'EXECUTOR');
+    const isColmeia  = (comando === 'EFEITO_COLMEIA');
+    if (isExecutor) {
+        fluxo = EXECUTOR_PIPELINE_STEPS.slice(); // array de textos
+        totalEtapas = fluxo.length;
+    }
+
+    if (isColmeia) {
+        fluxo = COLMEIA_PIPELINE_STEPS.slice(); // array de textos
+        totalEtapas = fluxo.length;
+    }
+
+    body.innerHTML = `
+        <div class="msg ia">🧠 ${titulo}</div>
+        <div id="status-monitor" style="background:#f8f9fa; padding:15px; border-radius:8px; margin:10px 0;">
+            <div style="color:#2196F3; font-weight:bold;">⏳ Aguardando...</div>
+        </div>
+        <div id="etapas-container" style="margin-top:10px;"></div>
+    `;
+
+    // ===== ANTI-STATUS-ANTIGO =====
+    function initBaselineAndStart() {
+        fetch(`${SERVER_URL}/status?client_id=${getClientId()}`)
+
+            .then(r => r.json())
+            .then(st => {
+                window.RUN_CTX.baselineKey = _makeStatusKey(st);
+                window.RUN_CTX.started = false;
+            })
+            .catch(() => {
+                window.RUN_CTX.baselineKey = null;
+                window.RUN_CTX.started = false;
+            });
+    }
+    initBaselineAndStart();
+
+
+    const monitorKey = 'status-monitor';
+    if (window.intervalos[monitorKey]) clearInterval(window.intervalos[monitorKey]);
+
+    let etapaAtualIndex = 0;
+    let ultimaEtapaRaw = '';
+
+    function buscar() {
+
+        // ✅ pega os elementos logo no começo (pra não dar erro)
+        const m = document.getElementById("status-monitor");
+        const etapasContainer = document.getElementById("etapas-container");
+        if (!m) return;
+
+        console.log("STATUS | client_id:", getClientId());
+
+
+        fetch(`${SERVER_URL}/status?client_id=${getClientId()}`)
+
+
+
+            .then(r => r.json())
+            .then(data => {
+
+                // ===== ANTI-STATUS-ANTIGO =====
+                const keyNow = _makeStatusKey(data);
+
+                // ❌ trava: se vier concluído/erro logo de cara, é status velho
+                if (!window.RUN_CTX.started) {
+                    const st = String(data.status || "").toLowerCase();
+
+                    if (st === "concluido" || st === "finalizado" || st === "erro") {
+                        m.innerHTML = `<div style="color:#2196F3; font-weight:bold;">⏳ Iniciando... (ignorando status antigo)</div>`;
+                        return;
+                    }
+                }
+
+
+                // se ainda não começou, ignora até o status mudar
+                if (!window.RUN_CTX.started) {
+
+                    // se baseline ainda não existe, segura
+                    if (!window.RUN_CTX.baselineKey) {
+                        m.innerHTML = `<div style="color:#2196F3; font-weight:bold;">⏳ Preparando execução...</div>`;
+                        return;
+                    }
+
+                    // se ainda está igual ao último status antigo, segura
+                    if (keyNow === window.RUN_CTX.baselineKey) {
+                        m.innerHTML = `<div style="color:#2196F3; font-weight:bold;">⏳ Iniciando... (aguardando status novo)</div>`;
+                        return;
+                    }
+
+                    // mudou = agora sim começou
+                    window.RUN_CTX.started = true;
+                }
+
+                // ============================
+                // IDENTIFICAR ETAPA ATUAL
+                // ============================
+                if (isExecutor || isColmeia) {
+                    const steps = isExecutor ? EXECUTOR_PIPELINE_STEPS : COLMEIA_PIPELINE_STEPS;
+
+                    const msg = (data.mensagem || "").toString().trim();
+                    const txt = (data.etapa || "").toString().trim();
+                    const raw = `${txt}||${msg}`;
+
+                    if (raw !== ultimaEtapaRaw) {
+                        ultimaEtapaRaw = raw;
+
+                        // tenta achar pelo texto da mensagem
+                        if (msg) {
+                            const idxByMsg = steps.findIndex(s => {
+                                const a = s.toLowerCase();
+                                const b = msg.toLowerCase();
+                                return a === b || b.includes(a);
+                            });
+                            if (idxByMsg >= 0) etapaAtualIndex = idxByMsg;
+                        }
+
+                        // tenta achar pelo padrão "Etapa X/Y"
+                        if (!msg) {
+                            const mm = txt.match(/Etapa\s*(\d+)\s*\/\s*(\d+)/i);
+                            if (mm) etapaAtualIndex = Math.max(0, parseInt(mm[1], 10) - 1);
+                        }
+                    }
+                } else {
+                    const etapaAtual = data.etapa || data.comando_atual;
+                    if (etapaAtual && etapaAtual !== ultimaEtapaRaw) {
+                        ultimaEtapaRaw = etapaAtual;
+                        const idx = fluxo.indexOf(etapaAtual);
+                        etapaAtualIndex = (idx >= 0) ? idx : 0;
+                    }
+                }
+
+                // ============================
+                // RENDER STATUS
+                // ============================
+                let html = '';
+
+                if (data.status === "erro") {
+                    clearInterval(window.intervalos[monitorKey]);
+
+                    html = `
+                        <div style="color:#f44336; font-weight:bold;">❌ Erro!</div>
+                        <div>${data.mensagem || "Erro desconhecido"}</div>
+                    `;
+
+                    setTimeout(() => fecharChat(), 8000);
+
+                } else if (data.status === "concluido" || data.status === "finalizado") {
+                    clearInterval(window.intervalos[monitorKey]);
+
+                    html = `
+                        <div style="color:#4CAF50; font-weight:bold;">✅ Concluído!</div>
+                        <div>${data.mensagem || "Sucesso"}</div>
+                    `;
+
+                    // marcar todas as etapas como concluídas
+                    if (etapasContainer && totalEtapas > 1) {
+                        etapasContainer.innerHTML = '';
+                        fluxo.forEach((stepId, idx) => {
+                            const nomeEtapa = (isExecutor || isColmeia)
+                                ? stepId
+                                : (STEP_NAMES[stepId] || stepId);
+
+                            etapasContainer.innerHTML += `
+                                <div style="background:#4CAF50; color:white; padding:8px; margin:5px 0; border-radius:4px; font-size:13px;">
+                                    ✅ ${idx + 1}/${totalEtapas}: ${nomeEtapa}
+                                </div>
+                            `;
+                        });
+                    }
+
+                    setTimeout(() => fecharChat(), 5000);
+
+                } else if (data.status === "aguardando") {
+                    html = `<div style="color:#2196F3; font-weight:bold;">⏳ Aguardando...</div>`;
+
+                    if (data.na_fila > 0) {
+                        html += `<div style="margin:8px 0;">📋 ${data.na_fila} comando(s) na fila</div>`;
+                    }
+
+                } else {
+                    html = `<div style="color:#2196F3; font-weight:bold;">⏳ Processando...</div>`;
+
+                    if (totalEtapas > 1) {
+                        html += `<div style="margin:8px 0; font-weight:bold;">Etapa ${etapaAtualIndex + 1}/${totalEtapas}</div>`;
+                    }
+
+                    if (data.mensagem) {
+                        html += `<div style="margin:6px 0;">▸ ${data.mensagem}</div>`;
+                    }
+
+                    // progresso
+                    let pct = data.progresso;
+                    if (pct === undefined || pct === null) {
+                        pct = Math.round(((etapaAtualIndex + 1) / totalEtapas) * 100);
+                    }
+
+                    html += `
+                        <div style="margin:8px 0;">
+                            <div style="background:#e0e0e0; height:20px; border-radius:10px; overflow:hidden;">
+                                <div style="background:#4CAF50; height:100%; width:${pct}%; transition:width 0.3s;"></div>
+                            </div>
+                            <div style="text-align:center; font-size:12px; margin-top:4px;">${pct}%</div>
+                        </div>
+                    `;
+
+                    // render etapas
+                    if (etapasContainer && totalEtapas > 1) {
+                        etapasContainer.innerHTML = '';
+
+                        fluxo.forEach((stepId, idx) => {
+                            let cor = '#e0e0e0';
+                            let icone = '⏳';
+                            let texto = 'Aguardando';
+
+                            if (idx < etapaAtualIndex) {
+                                cor = '#4CAF50'; icone = '✅'; texto = 'Concluído';
+                            } else if (idx === etapaAtualIndex) {
+                                cor = '#2196F3'; icone = '🔄'; texto = 'Em execução';
+                            }
+
+                            const nomeEtapa = (isExecutor || isColmeia)
+                                ? stepId
+                                : (STEP_NAMES[stepId] || stepId);
+
+                            etapasContainer.innerHTML += `
+                                <div style="background:${cor}; color:white; padding:8px; margin:5px 0; border-radius:4px; font-size:13px;">
+                                    ${icone} ${idx + 1}/${totalEtapas}: ${nomeEtapa} - ${texto}
+                                </div>
+                            `;
+                        });
+                    }
+                }
+
+                m.innerHTML = html;
+                body.scrollTop = body.scrollHeight;
+            })
+            .catch(err => {
+                console.error("Erro ao buscar status:", err);
+                m.innerHTML = `<div style="color:#f44336; font-weight:bold;">❌ Falha ao consultar /status</div>`;
+            });
+    }
+
+    buscar();
+    window.intervalos[monitorKey] = setInterval(buscar, 2000);
+}
+
+// ==============================
+// 🤖 FALA + STATUS SERVER (SEM CONFLITO)
+// ==============================
+
+let roboTimer = null;
+let serverTimer = null;
+let idxFala = 0;
+
+
+function getSaudacao() {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 12) return "Bom dia";
+    if (h >= 12 && h < 18) return "Boa tarde";
+    return "Boa noite";
+}
+
+function getNomeUsuarioAtual() {
+    const u = localStorage.getItem("usuario");
+    if (u && u.trim()) return u.trim();
+
+    const el = document.getElementById("nomeUsuario");
+    if (el && el.innerText.trim()) return el.innerText.trim();
+
+    return "Chefe";
+}
+
+function setFalaTexto(texto) {
+    const el = document.getElementById("falaTexto");
+    if (!el) return;
+
+    // animação suave
+    el.style.opacity = "0";
+    el.style.transform = "translateY(2px)";
+
+    setTimeout(() => {
+        el.innerText = texto;
+        el.style.opacity = "1";
+        el.style.transform = "translateY(0px)";
+    }, 180);
+}
+
+function setServerStatus(isOnline) {
+    const badge = document.getElementById("serverBadge");
+    if (!badge) return;
+
+    if (isOnline) {
+        badge.classList.remove("off");
+        badge.classList.add("on");
+        badge.innerText = "● ON";
+    } else {
+        badge.classList.remove("on");
+        badge.classList.add("off");
+        badge.innerText = "● OFF";
+    }
+}
+
+function getFalasBase() {
+    const nome = getNomeUsuarioAtual();
+    const saudacao = getSaudacao();
+
+    return [
+        `${saudacao}, ${nome}! 😄`,
+        `O que vamos atualizar hoje? ⚡`,
+        `Bora acelerar, ${nome}! 🚀`,
+        `Quer que eu rode as macros? 🔄`,
+        `Partiu atualizar os dashboards 📊`,
+        `Se quiser, eu já verifico a fila 📋`,
+        `Hoje é produtividade total 💪`,
+        `Só mandar que eu executo 😎`,
+        `Bora deixar tudo 100% 🔥`
+    ];
+}
+
+function trocarFalaRobo() {
+    const falas = getFalasBase();
+    const frase = falas[idxFala % falas.length];
+    idxFala++;
+
+    // se servidor estiver OFF, de vez em quando ele avisa
+    if (!window.SERVER_ONLINE && Math.random() < 0.35) {
+        setFalaTexto(`Servidor OFF 😭 (liga o Python aí, ${getNomeUsuarioAtual()}!)`);
+        return;
+    }
+
+    setFalaTexto(frase);
+}
+
+async function checarServidor() {
+  try {
+    const r = await fetch(`${SERVER_URL}/ping`, { cache: "no-store" });
+    await r.json();
+
+    setServerOnlineGlobal(true);
+    return true;
+
+  } catch (e) {
+    setServerOnlineGlobal(false);
+    return false;
+  }
+}
+
+
+function iniciarAssistenteRobo() {
+    // limpa timers antigos
+    if (roboTimer) clearInterval(roboTimer);
+    if (serverTimer) clearInterval(serverTimer);
+
+    // fala inicial
+    trocarFalaRobo();
+
+    // troca fala a cada 4.5s
+    roboTimer = setInterval(trocarFalaRobo, 4500);
+
+    // checa servidor a cada 5s
+    checarServidor();
+    serverTimer = setInterval(checarServidor, 5000);
+}
+
+// ao clicar no robô: troca na hora
+document.getElementById("avatar-ia")?.addEventListener("click", () => {
+    trocarFalaRobo();
+});
+
+// inicia quando carregar
+window.addEventListener("load", () => {
+    iniciarAssistenteRobo();
+});
+
+
+</script>
+
+</body>
+</html>

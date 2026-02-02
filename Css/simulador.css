@@ -1,0 +1,221 @@
+.content-box-sim {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 16px;
+    background: #f5f6fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    font-family: Arial, sans-serif;
+}
+
+.sim-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.btn-voltar {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: none;
+    background: #e0e4f0;
+    cursor: pointer;
+}
+
+.logo-mdias {
+    height: 40px;
+}
+
+.sim-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+
+.sim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.campo label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.campo input {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.btn-calcular, .btn-detalhes {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #2856a8;
+    color: #fff;
+    font-weight: 600;
+}
+
+.resumo-capacidade {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+}
+
+.resumo-card {
+    background: #f0f3ff;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.resumo-card strong {
+    display: block;
+    font-size: 12px;
+    color: #555;
+}
+
+.resumo-valor {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.status-ok {
+    color: #0a9b4a;
+    font-weight: bold;
+}
+
+.status-alerta {
+    color: #e29b00;
+    font-weight: bold;
+}
+
+.status-ruim {
+    color: #d63031;
+    font-weight: bold;
+}
+
+.titulo-explosao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.niveles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.nivel-card {
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.nivel-facil { background: #e2fbe2; }
+.nivel-normal { background: #fff5d6; }
+.nivel-dificil { background: #ffe0e0; }
+
+.sim-observacoes {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #555;
+}
+
+.tabela-simulador {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 12px;
+}
+
+.tabela-simulador th, .tabela-simulador td {
+    border: 1px solid #ddd;
+    padding: 4px 6px;
+    text-align: center;
+}
+
+.tabela-simulador th {
+    background: #f0f3ff;
+}
+
+
+.nec-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+}
+
+.nec-ok {
+    color: #0a9b4a;
+}
+
+.nec-bad {
+    color: #d63031;
+}
+
+/* Wrapper lado a lado */
+.necessarios-wrapper {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.necessario-card {
+    flex: 1;
+    min-width: 260px;
+    background: #f0f3ff;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    font-size: 13px;
+}
+
+
+.necessario-card strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Linhas */
+.nec-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 2px 0;
+}
+
+/* Coloração do resultado */
+.nec-ok {
+    color: #0a9b4a;
+}
+
+.nec-bad {
+    color: #d63031;
+}
+
+.resumo-pessoas {
+    margin-top: 12px;
+}
+.necessario-card {
+    flex: 1;
+    min-width: 260px;
+    background: #f0f3ff;
+    padding: 12px;
+    border-radius: 10px;
+}

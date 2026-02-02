@@ -1,0 +1,368 @@
+body {
+    background: #f4f6fb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+
+.content-box-otm {
+    background: #fff;
+    padding: 25px 30px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    width: 1100px;
+}
+
+.otm-topo{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.otm-topo h2 {
+    font-size: 26px;
+    color: #0d2740;
+}
+
+/* Botão voltar */
+.btn-voltar {
+    background: #303f9f;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btn-voltar:hover {
+    background: #1a237e;
+}
+
+/* Filtros */
+.filtros-otm {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.filtros-otm .campo {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    color: #333;
+}
+
+.filtros-otm input,
+.filtros-otm select {
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid #cfd3e3;
+    min-width: 150px;
+}
+
+.btn-aplicar {
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: none;
+    background: #303f9f;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btn-aplicar:hover {
+    background: #1a237e;
+}
+
+.btn-aplicar_btn-png{
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: none;
+    background: #303f9f;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btn-aplicar_btn-png:hover {
+    background: #1a237e;
+}
+
+/* Cards */
+.cards-otm {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.card-status {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 10px 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+}
+
+.card-status .card-label {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.card-status .card-valor {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0d2740;
+}
+
+.card-status:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.card-status.ativo {
+    outline: 2px solid #303f9f;
+}
+
+/* Card total não clicável (visual diferente) */
+.card-total {
+    cursor: default;
+}
+
+/* Tabela */
+.tabela-wrapper {
+    max-height: 500px;
+    overflow: auto;
+    border-radius: 10px;
+    border: 1px solid #e1e4f0;
+}
+
+.tabela-otm {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.tabela-otm thead {
+    background: #f1f3fb;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.tabela-otm th,
+.tabela-otm td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid #e6e8f0;
+}
+
+.tabela-otm tbody tr:nth-child(even) {
+    background: #fafbff;
+}
+
+/* Badge de status */
+.badge-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: #fff;
+}
+
+.st-expedido {
+    background: #2e7d32;
+}
+.st-aguardando {
+    background: #f9a825;
+}
+.st-carregamento {
+    background: #1565c0;
+}
+.st-patio {
+    background: #616161;
+}
+.st-carregado {
+    background: #424242;
+}
+.st-outro {
+    background: #757575;
+}
+
+/* Topo alinhado com logo */
+.otm-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+/* Grupo do botão + título */
+/* esquerda */
+.topo-esq{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* título + atualização embaixo */
+.titulo-info{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+/* direita (status + logo juntos) */
+.topo-dir{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* cria um bloco só pro título + atualização */
+.topo-esq .titulo-info{
+  display: flex;
+  flex-direction: column; /* <-- isso força ficar embaixo */
+  gap: 4px;
+}
+
+.topo-esq h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0d2740;
+}
+
+/* Logo MDB */
+.logo-mdias {
+    width: 150px;
+    height: auto;
+    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.25));
+    transition: transform 0.2s ease-in-out;
+}
+
+.logo-mdias:hover {
+    transform: scale(1.05);
+}
+
+/* status box agora fixo e alinhado */
+#autoStatusBox{
+    text-align: right;
+    font-family: system-ui, "Segoe UI", sans-serif;
+    color: #1b1b1b;
+    opacity: 0.9;
+}
+
+#autoCurrent{
+    font-size: 14px;
+    font-weight: 800;
+    color: #0d2740;
+}
+
+#autoTimer{
+    font-size: 12px;
+    color: #6b7280;
+}
+
+
+
+#autoCurrent {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#autoTimer {
+    font-size: 14px;
+    color: #444;
+}
+
+
+
+/* ----- Gerar PNG: esconder elementos temporários ----- */
+.no-print-temp {
+    display: none !important;
+}
+
+/* Durante o modo print, libera a tabela pra mostrar tudo (sem scroll) */
+.print-mode .tabela-wrapper {
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* Estilinho separado pro botão Gerar PNG (se quiser diferenciar) */
+.btn-png {
+    margin-left: 8px;
+    background-color: #ffffff;
+    color: #1f2a44;
+    border: 2px solid #1f2a44;
+}
+
+.btn-png:hover {
+    background-color: #1f2a44;
+    color: #ffffff;
+}
+
+/* ===== Separação em % (barra) ===== */
+.sep-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 110px;
+}
+
+.sep-bar {
+    flex: 1;
+    height: 10px;
+    background: #e8ecf7;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.sep-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #303f9f, #1a237e);
+}
+
+.sep-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0d2740;
+    min-width: 42px;
+    text-align: right;
+}
+
+/* ===== Tempo no Armazém ===== */
+.badge-tempo {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #f1f3fb;
+    color: #0d2740;
+    border: 1px solid #d8def3;
+    white-space: nowrap;
+}
+
+/* cores por faixa (opcional, fica top) */
+.tp-ok { background: #e8f5e9; border-color: #c8e6c9; color: #1b5e20; }
+.tp-mid { background: #fff8e1; border-color: #ffe0b2; color: #e65100; }
+.tp-bad { background: #ffebee; border-color: #ffcdd2; color: #b71c1c; }
+
+/* estilo da última atualização */
+.ultima-att{
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+

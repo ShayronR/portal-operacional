@@ -1,0 +1,216 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+}
+
+.content-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 14px;
+    max-width: 1300px;
+    margin: 30px auto;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+
+
+.btn-voltar {
+    background: #2f2f2f;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filtros input,
+.filtros select,
+.filtros button {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.filtros button {
+    background: #1f4fd8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #f5f6f8;
+}
+
+tbody tr:hover {
+    background: #eef3ff;
+}
+
+
+
+@media print {
+    .filtros,
+    .paginacao,
+    .btn-voltar {
+        display: none;
+    }
+
+    table {
+        font-size: 11px;
+    }
+}
+
+
+
+
+/* ===== TOPO ===== */
+.topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-center; /* centro real */
+    position: relative;
+    margin-bottom: 25px;
+}
+
+/* Logo + título */
+.titulo-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto;
+}
+
+.titulo-box h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* Logo */
+.logo-mdb {
+    height: 32px;      /* 👈 trava o tamanho */
+    max-height: 32px;
+    width: auto;
+    object-fit: contain;
+}
+.logo-topo{
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Botão Voltar */
+.btn-voltar {
+    position: absolute;
+    right: 0;
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+
+
+
+/* ===== IMPRESSÃO ===== */
+@media print {
+
+    .btn-voltar,
+    .filtros,
+    .paginacao,
+    button {
+        display: none !important;
+    }
+
+    .topo {
+       
+
+        display: flex;
+        align-items: center;
+        justify-content: space-center; /* centro real */
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    .logo-mdb {
+        height: 45px;
+    }
+
+    .titulo-box h2 {
+        font-size: 18px;
+    }
+}
+
+/* ===== CAIXA STATUS ===== */
+.colmeia-resumo-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 20px 0 10px 0;
+}
+
+.card-resumo {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-resumo .titulo {
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.card-resumo .valor {
+    font-size: 26px;
+    font-weight: bold;
+    color: #1f3a8a;
+}
+
+.card-resumo.destaque {
+    background: linear-gradient(135deg, #1f3a8a, #2563eb);
+}
+
+.card-resumo.destaque .titulo,
+.card-resumo.destaque .valor {
+    color: #fff;
+}
+
+.filtros button {
+    background: #1f4fd8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: .15s;
+}
+
+.filtros button:hover{
+    filter: brightness(1.05);
+}

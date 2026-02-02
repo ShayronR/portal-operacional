@@ -1,0 +1,324 @@
+/* =========================================
+   🤖 MODO INVASÃO (assistente flutuante)
+   ========================================= */
+
+.invasao-wrap{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 99999;
+  width: 360px;
+  max-width: calc(100vw - 24px);
+  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+
+.invasao-card{
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(13, 39, 64, 0.18);
+  outline: 3px solid rgba(13, 39, 64, 0.06);
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.12);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.invasao-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(13,39,64,0.08);
+  background: linear-gradient(180deg, #f7f9fc, #ffffff);
+}
+
+.invasao-top .titulo{
+  font-weight:800;
+  font-size:13px;
+  color:#0d2740;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.invasao-top .botoes-top{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.invasao-btn-icon{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  border:1px solid rgba(13,39,64,0.14);
+  background:#fff;
+  color:#0d2740;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:900;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  transition: 0.18s ease;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+}
+
+.invasao-btn-icon:hover{
+  transform: translateY(-1px);
+  border-color: rgba(11,44,95,0.55);
+  box-shadow: 0 14px 22px rgba(0,0,0,0.10);
+}
+
+.invasao-btn-icon:active{
+  transform: translateY(0px) scale(0.98);
+}
+
+.invasao-body{
+  padding: 12px;
+}
+
+.invasao-fala{
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.invasao-robo{
+  font-size: 28px;
+  width: 36px;
+  text-align: center;
+  animation: invasaoFloat 2.6s ease-in-out infinite;
+}
+
+@keyframes invasaoFloat{
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
+}
+
+.invasao-balao{
+  flex: 1;
+  background: #0b2c5f;
+  color: #fff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.25;
+  box-shadow: 0 12px 22px rgba(0,0,0,0.12);
+  position: relative;
+}
+
+.invasao-balao::before{
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 18px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid #0b2c5f;
+}
+
+.invasao-status{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.95;
+}
+
+.invasao-badge{
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+  user-select: none;
+}
+
+.invasao-badge.off{
+  background: rgba(231, 76, 60, 0.18);
+  color: #ff6b6b;
+}
+
+.invasao-badge.on{
+  background: rgba(46, 204, 113, 0.18);
+  color: #2ecc71;
+}
+
+.invasao-acoes{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.invasao-btn{
+  border: none;
+  border-radius: 14px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 12px;
+  background: #0b2c5f;
+  color: #fff;
+  transition: .2s ease;
+  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+}
+
+.invasao-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(0,0,0,0.14);
+}
+
+.invasao-btn.sec{
+  background: #ffffff;
+  color: #0b2c5f;
+  border: 1px solid rgba(13,39,64,0.16);
+}
+
+.invasao-btn.warn{
+  background: #7a0016;
+}
+
+.invasao-min{
+  display: none;
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 99999;
+}
+
+.invasao-min button{
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  border: 1px solid rgba(13,39,64,0.18);
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.14);
+  font-size: 22px;
+  transition: .2s ease;
+}
+
+.invasao-min button:hover{
+  transform: translateY(-2px);
+}
+
+/* estado minimizado */
+.invasao-wrap.minimizado{
+  display: none;
+}
+.invasao-min.mostrar{
+  display: block;
+}
+.botoes-top{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.invasao-acoes{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:12px;
+}
+
+.invasao-btn{
+  width: 100%;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #0b2c5f;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  margin-top: 8px;
+  transition: 0.2s ease;
+}
+
+.invasao-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.invasao-btn:active{
+  transform: translateY(0px) scale(0.99);
+}
+
+.invasao-info{
+  font-size:12px;
+  opacity:0.85;
+  background:#f5f7fb;
+  border:1px solid rgba(13,39,64,0.10);
+  padding:10px 12px;
+  border-radius:12px;
+  color:#0d2740;
+}
+
+/* ===============================
+   🤖 BALÃO MINI (modo minimizado)
+=============================== */
+
+.invasao-min {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 99999;
+  display: none; /* começa escondido e aparece via JS */
+}
+
+.invasao-min button {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 22px;
+  background: #0b2b5c;
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(0,0,0,.18);
+}
+
+.invasao-balao-mini {
+  position: absolute;
+  right: 62px;
+  bottom: 6px;
+  background: #0b2b5c;
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 14px;
+  min-width: 180px;
+  max-width: 260px;
+  font-size: 12px;
+  line-height: 1.2;
+  box-shadow: 0 8px 22px rgba(0,0,0,.18);
+  opacity: 1;
+  transform: translateY(0px);
+  transition: all .25s ease;
+}
+
+.invasao-balao-mini::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  bottom: 16px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid #0b2b5c;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+.invasao-balao-mini.hide {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}

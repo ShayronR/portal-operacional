@@ -1,0 +1,265 @@
+/* ===============================
+   BASE
+=============================== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 30px auto;
+  background: #ffffff;
+  padding: 25px 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+
+
+
+
+/* ===============================
+   TÍTULO
+=============================== */
+h2 {
+  margin: 10px 0 25px;
+  font-size: 22px;
+  color: #222;
+  border-left: 5px solid #0b5ed7;
+  padding-left: 12px;
+}
+
+/* ===============================
+   FILTROS
+=============================== */
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.filtros select,
+.filtros input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #cfd8dc;
+  font-size: 14px;
+}
+
+/* ===============================
+   CARDS RESUMO
+=============================== */
+.cards-resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.card-resumo {
+  background: linear-gradient(135deg, #0b5ed7, #084298);
+  color: #fff;
+  padding: 18px 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(11,94,215,.35);
+  position: relative;
+}
+
+.card-resumo span {
+  font-size: 14px;
+  opacity: .9;
+}
+
+.card-resumo strong {
+  display: block;
+  font-size: 32px;
+  margin-top: 6px;
+}
+
+/* ===============================
+   TABELA
+=============================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background: #0b5ed7;
+  color: #fff;
+}
+
+thead th {
+  padding: 12px;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+
+tbody td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+tbody tr:hover {
+  background: #e3f2fd;
+}
+
+/* ===============================
+   DESTAQUES POR COLUNA
+=============================== */
+td:nth-child(4) {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+td:nth-child(5) {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+td:nth-child(6) {
+  font-weight: bold;
+}
+
+/* ===============================
+   IMPRESSÃO
+=============================== */
+@media print {
+  .btn-voltar,
+  .btn-imprimir,
+  .btn-excel,
+  .filtros {
+    display: none;
+  }
+
+
+  .btn-voltar,
+  .btn-imprimir,
+  .filtros {
+    display: none;
+  }
+
+  .container {
+    box-shadow: none;
+    margin: 0;
+  }
+}
+
+/* ===============================
+   TOPO
+=============================== */
+
+
+.top-bar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.top-actions{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botões padrão topo */
+.btn-voltar,
+.btn-imprimir,
+.btn-excel{
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  transition: 0.2s ease;
+}
+
+/* Voltar */
+.btn-voltar{
+  background: #2f2f2f;
+  color: #fff;
+}
+
+/* Imprimir */
+.btn-imprimir{
+  background: #0b57d0;
+  color: #fff;
+}
+
+/* Excel */
+.btn-excel{
+  background: #0f9d58;
+  color: #fff;
+}
+
+.btn-voltar:hover,
+.btn-imprimir:hover,
+.btn-excel:hover{
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
+
+.box-meta{
+  margin-top: 25px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  border-left: 5px solid #0b5ed7;
+}
+
+.box-meta h3{
+  margin: 0 0 14px;
+  font-size: 16px;
+  color: #222;
+}
+
+.meta-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.meta-item{
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  padding: 14px;
+  border-radius: 12px;
+}
+
+.meta-item span{
+  font-size: 13px;
+  color: #555;
+}
+
+.meta-item strong{
+  display: block;
+  margin-top: 6px;
+  font-size: 22px;
+  color: #0b5ed7;
+}
+
+.meta-ok{
+  color: #2e7d32 !important;
+}
+
+.meta-bad{
+  color: #d32f2f !important;
+}
